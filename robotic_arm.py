@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
+from matplotlib.ticker import MultipleLocator
 
 class RoboticArm:
     """
@@ -62,7 +63,7 @@ class RoboticArm:
 
         # Initialize the figure and axes for plotting
         self.fig, self.ax = plt.subplots()
-        plt.subplots_adjust(left=0.1, bottom=0.3)  # Adjust plot to make space for sliders
+        plt.subplots_adjust(left=0.1, bottom=0.35)  # Adjust plot to make space for sliders
 
         # Initialize the line object that will represent the robotic arm
         self.line, = self.ax.plot([], [], 'o-', lw=2)
@@ -129,7 +130,7 @@ class RoboticArm:
 
             # Update base_y for the next set of sliders
             # Each joint requires space for two sliders (length and angle)
-            base_y += 2 * (slider_height + slider_spacing)
+            base_y += 1.2 * (slider_height + slider_spacing)
 
         # Create 'Add Joint' button
         self.add_button = Button(
@@ -237,8 +238,15 @@ class RoboticArm:
         self.ax.set_xlim(-max_length, max_length)
         self.ax.set_ylim(-max_length, max_length)
 
+        # Set gridline spacing to every 0.25 units
+        self.ax.xaxis.set_major_locator(MultipleLocator(1))
+        self.ax.yaxis.set_major_locator(MultipleLocator(0.5))
+
         # Ensure equal scaling on both axes
         self.ax.set_aspect('equal', 'box')
+
+        # Enable grid lines
+        self.ax.grid(True, which='both', linestyle='--', color='gray', linewidth=0.5)
 
         # Redraw canvas
         self.fig.canvas.draw_idle()

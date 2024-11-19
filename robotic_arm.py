@@ -46,7 +46,7 @@ class RoboticArm:
             ValueError: If lengths and angles are not of the same length.
         """
         if lengths is None:
-            self.lengths = [1.0, 0.5]  # Default lengths of each joint
+            self.lengths = [1.0, 1.0]  # Default lengths of each joint
         else:
             self.lengths = lengths
 

@@ -36,6 +36,7 @@ def move_arm_to_max_x_same_y(arm):
     """
     lengths = arm.lengths
     ye_initial = forward_kinematics(arm.angles, lengths)[1]
+    print("Initial y-coordinate:", ye_initial)
     initial_guess = np.array(arm.angles)
     bounds = [(0, np.pi)] * len(initial_guess)
     cons = {'type': 'eq', 'fun': y_constraint, 'args': (lengths, ye_initial)}
@@ -52,6 +53,8 @@ def move_arm_to_max_x_same_y(arm):
     if result.success:
         target_angles = result.x
         simulate_movement(arm, target_angles)
+        final_x, final_y = forward_kinematics(target_angles, lengths)
+        print(f"Final position: x = {final_x}, y = {final_y}")
     else:
         print("Optimization failed:", result.message)
 
@@ -59,7 +62,8 @@ def simulate_movement(arm, target_angles, steps=100):
     current_angles = np.array(arm.angles)
     target_angles = np.array(target_angles)
     step = (target_angles - current_angles) / steps
-        
+    
+    input("Press Enter to start the simulation...")
     for i in range(steps):
         current_angles += step
         arm.update_angles(current_angles)

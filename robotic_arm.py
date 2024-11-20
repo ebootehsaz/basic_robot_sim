@@ -33,15 +33,18 @@ class RoboticArm:
         remove_joint(self, event): Remove the last joint from the arm.
     """
 
-    def __init__(self, lengths=None, angles=None):
+    def __init__(self, lengths=None, angles=None, fig=None, ax=None, include_ui=True):
         """
         Initialize the RoboticArm instance with given lengths and angles.
 
         Parameters:
             lengths (list of float, optional): Lengths of each joint segment.
-                Defaults to [1.0, 0.5].
+                Defaults to [1.0, 1.0].
             angles (list of float, optional): Angles of each joint in radians.
                 Defaults to [π/2, π/2].
+            fig (matplotlib.figure.Figure, optional): Existing figure to plot on.
+            ax (matplotlib.axes.Axes, optional): Existing axes to plot on.
+            include_ui (bool, optional): Whether to include sliders and buttons.
 
         Raises:
             ValueError: If lengths and angles are not of the same length.
@@ -61,19 +64,26 @@ class RoboticArm:
         if len(self.lengths) != len(self.angles):
             raise ValueError("Lengths and angles must be of the same length.")
 
-        # Initialize the figure and axes for plotting
-        self.fig, self.ax = plt.subplots()
-        plt.subplots_adjust(left=0.1, bottom=0.35)  # Adjust plot to make space for sliders
+        # Use provided figure and axes or create new ones
+        if fig is None or ax is None:
+            self.fig, self.ax = plt.subplots()
+            plt.subplots_adjust(left=0.1, bottom=0.35)
+        else:
+            self.fig = fig
+            self.ax = ax
 
         # Initialize the line object that will represent the robotic arm
         self.line, = self.ax.plot([], [], 'o-', lw=2)
 
         # List to hold slider widgets
         self.sliders = []
+        self.include_ui = include_ui
 
         # Initialize the plot and user interface
         self.init_plot()
-        self.init_ui()
+        if self.include_ui:
+            self.init_ui()
+
 
     def constrain_angle(self, angle):
         """
@@ -203,12 +213,12 @@ class RoboticArm:
 
         self.update_plot()
 
-    def update_plot(self):
+    def update_plot(self, base_position=(0, 0)):
         """
         Update the plot of the robotic arm based on current lengths and angles.
         """
         # Starting position (origin)
-        x, y = 0, 0
+        x, y = base_position
         positions = [(x, y)]  # List to store joint positions
 
         current_angle = np.pi / 2  # Start from vertical upwards position

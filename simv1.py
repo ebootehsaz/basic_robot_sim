@@ -64,10 +64,11 @@ def simulate_movement(arm, target_angles, steps=100):
     step = (target_angles - current_angles) / steps
     
     input("Press Enter to start the simulation...")
+    plt.pause(1.02)
     for i in range(steps):
         current_angles += step
         arm.update_angles(current_angles)
-        plt.pause(0.05)  # Adjust the pause to control the simulation speed
+        plt.pause(0.02)  # Adjust the pause to control the simulation speed
         print(f"Step {i+1}/{steps}: Angles = {current_angles}")
     
     print(f"Final angles: {current_angles}")
